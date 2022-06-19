@@ -1,4 +1,5 @@
-import React, { useState, useEffect, Route, Switch } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -8,6 +9,10 @@ import EditAvatarPopup from './EditAvatarPopup.js';
 import ImagePopup from './ImagePopup.js';
 import api from '../utils/api.js';
 import CurrentUserContext from '../contexts/CurrentUserContext.js';
+import Register from './Register.js';
+import Login from './Login.js';
+import ProtectedRoute from './ProtectedRoute.js';
+import InfoTooltip from './InfoTooltip.js';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -16,6 +21,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(true);
@@ -127,19 +133,20 @@ function App() {
       <Switch>
         <CurrentUserContext.Provider value={currentUser}>
           <Header />
-          <Route path="/">
-            <Main
-              cards={cards}
-              handleCardDelete={handleCardDelete}
-              handleCardLike={handleCardLike}
-              onEditProfile={handleEditProfileClick}
-              onAddPlace={handleAddPlaceClick}
-              onEditAvatar={handleEditAvatarClick}
-              onCardClick={handleCardClick}
-            />
-          </Route>
-          <Footer />
-
+          <ProtectedRoute exact path="/">
+            <Route exact path="/">
+              {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+              <Main
+                cards={cards}
+                handleCardDelete={handleCardDelete}
+                handleCardLike={handleCardLike}
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onEditAvatar={handleEditAvatarClick}
+                onCardClick={handleCardClick}
+              />
+            </Route>
+          </ProtectedRoute>
           <Route path="/sign-in">
             <Login />
           </Route>
@@ -147,6 +154,8 @@ function App() {
           <Route path="/sign-up">
             <Register />
           </Route>
+
+          <Footer />
 
           <EditProfilePopup
             isOpen={isEditProfilePopupOpen}
