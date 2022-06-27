@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -23,6 +23,12 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [error, setError] = useState('');
+  const [userData, setUserData] = useState({
+    email: '',
+    password: '',
+  });
+  const history = useHistory();
 
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(true);
@@ -129,31 +135,79 @@ function App() {
       .catch((err) => console.log('error', err));
   }
 
+  const handleLogin = (data) => {
+    auth
+      .login(data)
+      .then((data) => {
+        if (!data) {
+          return setError('Такого пользователя не существует');
+        }
+
+        if (data.jwt) {
+          const { email, password } = data;
+
+          setUserData({
+            email: email,
+            password: password,
+          });
+          setLoggedIn(true);
+          localStorage.setItem('jwt', data.jwt);
+          history.push('/');
+        }
+      })
+      .catch((error) => setError('Что-то пошло не так!'));
+  };
+  const handleRegister = (data) => {
+    auth
+      .register(data)
+      .then((res) => {
+        if (res.statusCode === 400) {
+          setError('Что-то пошло не так!');
+        } else {
+          setError('');
+          history.push('/sing-in');
+        }
+      })
+      .catch((error) => setError('Что-то пошло не так!'));
+  };
+
+  // const tokenCheck = () => {
+  //   if (localStorage.getItem('jwt')) {
+  //     let jwt = localStorage.getItem('jwt');
+  //     auth.getToken(jwt).then((res) => {
+  //       if (res) {
+  //         let userData = {
+  //           email: res.email,
+  //           password: res.password,
+  //         };
+  //         setLoggedIn = true;
+  //       }
+  //     });
+  //   }
+  // };
+
   return (
     <div className="page">
       <Switch>
         <CurrentUserContext.Provider value={currentUser}>
-          <Header />
-          <ProtectedRoute exact path="/">
-            <Route exact path="/">
-              {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
-              <Main
-                cards={cards}
-                handleCardDelete={handleCardDelete}
-                handleCardLike={handleCardLike}
-                onEditProfile={handleEditProfileClick}
-                onAddPlace={handleAddPlaceClick}
-                onEditAvatar={handleEditAvatarClick}
-                onCardClick={handleCardClick}
-              />
-            </Route>
+          <Header userData={userData} />
+          <ProtectedRoute exact path="/" loggedIn={loggedIn}>
+            <Main
+              cards={cards}
+              handleCardDelete={handleCardDelete}
+              handleCardLike={handleCardLike}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onEditAvatar={handleEditAvatarClick}
+              onCardClick={handleCardClick}
+            />
           </ProtectedRoute>
           <Route path="/sign-in">
-            <Login />
+            <Login onLogin={handleLogin} />
           </Route>
 
           <Route path="/sign-up">
-            <Register />
+            <Register onRegister={handleRegister} />
           </Route>
 
           <Footer />

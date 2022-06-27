@@ -1,14 +1,46 @@
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
-function Register() {
+function Register({ onRegister }) {
+  const [data, setData] = useState({
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData({
+      ...data,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (data.password) {
+      const { password, email } = data;
+      console.log({ password, email });
+      onRegister({ password, email });
+    }
+  };
   return (
     <>
       <section className="register">
         <h2 className="register__name">Регистрация</h2>
-        <form className="register__form">
-          <input placeholder="Email" className="input register__input-email"></input>
+        <form onSubmit={handleSubmit} className="register__form">
+          <input
+            placeholder="Email"
+            className="input register__input-email"
+            name="email"
+            value={data.email}
+            onChange={handleChange}></input>
 
-          <input placeholder="Пароль" className="input register__input-password"></input>
+          <input
+            placeholder="Пароль"
+            className="input register__input-password"
+            name="password"
+            value={data.password}
+            onChange={handleChange}></input>
 
           <button type="submit" className="register__button">
             Зарегистироваться
@@ -23,4 +55,4 @@ function Register() {
   );
 }
 
-export default withRouter(Register);
+export default Register;
