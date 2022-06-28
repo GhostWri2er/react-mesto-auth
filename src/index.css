@@ -12,6 +12,11 @@
 @import url(./blocks/header/__email/header__email.css);
 @import url(./blocks/header/__button/header__button.css);
 
+@import url(./blocks/InfoTooltip/InfoTooltip.css);
+@import url(./blocks/InfoTooltip/__container/InfoTooltip__container.css);
+@import url(./blocks/InfoTooltip/__name/InfoTooltip__name.css);
+@import url(./blocks/InfoTooltip/__button-close/InfoTooltip__button-close.css);
+
 @import url(./blocks/popup/popup.css);
 @import url(./blocks/popup/__container/popup__container.css);
 @import url(./blocks/popup/_opened/popup_opened.css);
@@ -73,8 +78,5 @@
 
 @import url(./blocks/input/input.css);
 
-@import url(./blocks/InfoTooltip/InfoTooltip.css);
-@import url(./blocks/InfoTooltip/__container/InfoTooltip__container.css);
-@import url(./blocks/InfoTooltip/__name/InfoTooltip__name.css);
-@import url(./blocks/InfoTooltip/__button-close/InfoTooltip__button-close.css);
+
 

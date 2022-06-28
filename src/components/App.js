@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -19,15 +19,15 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isInfoToolTipOpen, setIsInfoToolTipOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [error, setError] = useState('');
   const [userData, setUserData] = useState({
     email: '',
-    password: '',
   });
+
   const history = useHistory();
 
   const handleEditAvatarClick = () => {
@@ -51,6 +51,7 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setSelectedCard({});
+    setIsInfoToolTipOpen(false);
   };
 
   useEffect(() => {
@@ -135,40 +136,46 @@ function App() {
       .catch((err) => console.log('error', err));
   }
 
+  const handleError = (error) => {
+    setIsInfoToolTipOpen(true);
+    console.log(error.message);
+  };
+
   const handleLogin = (data) => {
     auth
       .login(data)
       .then((data) => {
         if (!data) {
-          return setError('Такого пользователя не существует');
+          setIsInfoToolTipOpen(true);
         }
 
-        if (data.jwt) {
-          const { email, password } = data;
-
-          setUserData({
-            email: email,
-            password: password,
-          });
+        if (data) {
           setLoggedIn(true);
           localStorage.setItem('jwt', data.jwt);
           history.push('/');
+          const { email } = data;
+
+          setUserData({
+            email: email,
+          });
+        } else {
+          setIsInfoToolTipOpen(true);
         }
       })
-      .catch((error) => setError('Что-то пошло не так!'));
+      .catch(handleError);
   };
   const handleRegister = (data) => {
     auth
       .register(data)
       .then((res) => {
-        if (res.statusCode === 400) {
-          setError('Что-то пошло не так!');
+        if (res) {
+          setIsInfoToolTipOpen(true);
+          history.push('/sign-in');
         } else {
-          setError('');
-          history.push('/sing-in');
+          setIsInfoToolTipOpen(true);
         }
       })
-      .catch((error) => setError('Что-то пошло не так!'));
+      .catch(handleError);
   };
 
   // const tokenCheck = () => {
@@ -231,6 +238,7 @@ function App() {
           />
 
           <ImagePopup onClose={closeAllPopups} card={selectedCard} />
+          <InfoTooltip isOpen={isInfoToolTipOpen} onClose={closeAllPopups} />
         </CurrentUserContext.Provider>
       </Switch>
     </div>
