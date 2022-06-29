@@ -24,9 +24,6 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [userData, setUserData] = useState({
-    email: '',
-  });
 
   const history = useHistory();
 
@@ -104,6 +101,16 @@ function App() {
       });
   }, []);
 
+  useEffect(() => {
+    tokenCheck();
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn) {
+      history.push('/');
+    }
+  }, [loggedIn]);
+
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
@@ -136,34 +143,23 @@ function App() {
       .catch((err) => console.log('error', err));
   }
 
-  const handleError = (error) => {
-    setIsInfoToolTipOpen(true);
-    console.log(error.message);
-  };
-
-  const handleLogin = (data) => {
+  function handleLogin(data) {
     auth
       .login(data)
       .then((data) => {
-        if (!data) {
-          setIsInfoToolTipOpen(true);
-        }
-
         if (data) {
+          console.log(data);
+          localStorage.setItem('jwt', data.token);
           setLoggedIn(true);
-          localStorage.setItem('jwt', data.jwt);
-          history.push('/');
-          const { email } = data;
-
-          setUserData({
-            email: email,
-          });
         } else {
           setIsInfoToolTipOpen(true);
         }
       })
-      .catch(handleError);
-  };
+      .catch((err) => {
+        setIsInfoToolTipOpen(true);
+        console.log('error', err);
+      });
+  }
   const handleRegister = (data) => {
     auth
       .register(data)
@@ -175,29 +171,34 @@ function App() {
           setIsInfoToolTipOpen(true);
         }
       })
-      .catch(handleError);
+      .catch((err) => {
+        setIsInfoToolTipOpen(true);
+        console.log('error', err);
+      });
   };
 
-  // const tokenCheck = () => {
-  //   if (localStorage.getItem('jwt')) {
-  //     let jwt = localStorage.getItem('jwt');
-  //     auth.getToken(jwt).then((res) => {
-  //       if (res) {
-  //         let userData = {
-  //           email: res.email,
-  //           password: res.password,
-  //         };
-  //         setLoggedIn = true;
-  //       }
-  //     });
-  //   }
-  // };
+  const tokenCheck = () => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      auth
+        .getToken(jwt)
+        .then((res) => {
+          if (res) {
+            setLoggedIn(true);
+          }
+        })
+        .catch((err) => {
+          setIsInfoToolTipOpen(true);
+          console.log('error', err);
+        });
+    }
+  };
 
   return (
     <div className="page">
       <Switch>
         <CurrentUserContext.Provider value={currentUser}>
-          <Header userData={userData} />
+          <Header />
           <ProtectedRoute exact path="/" loggedIn={loggedIn}>
             <Main
               cards={cards}

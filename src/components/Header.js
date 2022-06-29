@@ -8,7 +8,7 @@ function Header() {
       <div className="header__container">
         <img className="header__logo" src={logo} alt="Логотип" />
         <nav className="header__login">
-          <p className="header__email">email</p>
+          <p className="header__email"></p>
           <Switch>
             <Route exact path="/">
               <Link to="/sign-in" className="header__button">
