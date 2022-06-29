@@ -24,34 +24,32 @@ function Register({ onRegister }) {
     }
   };
   return (
-    <>
-      <section className="register">
-        <h2 className="register__name">Регистрация</h2>
-        <form onSubmit={handleSubmit} className="register__form">
-          <input
-            placeholder="Email"
-            className="input register__input-email"
-            name="email"
-            value={data.email}
-            onChange={handleChange}></input>
+    <section className="register">
+      <h2 className="register__name">Регистрация</h2>
+      <form onSubmit={handleSubmit} className="register__form">
+        <input
+          placeholder="Email"
+          className="input register__input-email"
+          name="email"
+          value={data.email}
+          onChange={handleChange}></input>
 
-          <input
-            placeholder="Пароль"
-            className="input register__input-password"
-            name="password"
-            value={data.password}
-            onChange={handleChange}></input>
+        <input
+          placeholder="Пароль"
+          className="input register__input-password"
+          name="password"
+          value={data.password}
+          onChange={handleChange}></input>
 
-          <button type="submit" className="register__button">
-            Зарегистироваться
-          </button>
-        </form>
-        <p className="register__paragraph">Уже зарегистрированы?</p>
-        <Link to="/sign-in" className="register__link">
-          Войти
-        </Link>
-      </section>
-    </>
+        <button type="submit" className="register__button">
+          Зарегистироваться
+        </button>
+      </form>
+      <p className="register__paragraph">Уже зарегистрированы?</p>
+      <Link to="/sign-in" className="register__link">
+        Войти
+      </Link>
+    </section>
   );
 }
 

@@ -27,30 +27,28 @@ function Login({ onLogin }) {
   };
 
   return (
-    <>
-      <section className="register">
-        <h2 className="register__name">Вход</h2>
-        <form onSubmit={handleSubmit} className="register__form">
-          <input
-            onChange={handleChange}
-            name="email"
-            value={data.email}
-            placeholder="Email"
-            className="input register__input-email"></input>
+    <section className="register">
+      <h2 className="register__name">Вход</h2>
+      <form onSubmit={handleSubmit} className="register__form">
+        <input
+          onChange={handleChange}
+          name="email"
+          value={data.email}
+          placeholder="Email"
+          className="input register__input-email"></input>
 
-          <input
-            onChange={handleChange}
-            value={data.password}
-            name="password"
-            placeholder="Пароль"
-            className="input register__input-password"></input>
+        <input
+          onChange={handleChange}
+          value={data.password}
+          name="password"
+          placeholder="Пароль"
+          className="input register__input-password"></input>
 
-          <button type="submit" className="register__button">
-            Войти
-          </button>
-        </form>
-      </section>
-    </>
+        <button type="submit" className="register__button">
+          Войти
+        </button>
+      </form>
+    </section>
   );
 }
 

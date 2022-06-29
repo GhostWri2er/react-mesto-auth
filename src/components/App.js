@@ -24,6 +24,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [status, setStatus] = useState('');
 
   const history = useHistory();
 
@@ -126,11 +127,12 @@ function App() {
   }
 
   function handleCardDelete(card) {
-    api.deleteCard(card._id).then(() => {
-      setCards((state) => state.filter((c) => c._id !== card._id)).catch((err) =>
-        console.log('error', err),
-      );
-    });
+    api
+      .deleteCard(card._id)
+      .then(() => {
+        setCards((state) => state.filter((c) => c._id !== card._id));
+      })
+      .catch((err) => console.log('error', err));
   }
 
   function handleAddPlaceSubmit(data) {
@@ -165,15 +167,16 @@ function App() {
       .register(data)
       .then((res) => {
         if (res) {
-          setIsInfoToolTipOpen(true);
+          setStatus('Ok');
           history.push('/sign-in');
-        } else {
-          setIsInfoToolTipOpen(true);
         }
       })
       .catch((err) => {
-        setIsInfoToolTipOpen(true);
+        setStatus('error');
         console.log('error', err);
+      })
+      .finally(() => {
+        setIsInfoToolTipOpen(true);
       });
   };
 
@@ -239,7 +242,7 @@ function App() {
           />
 
           <ImagePopup onClose={closeAllPopups} card={selectedCard} />
-          <InfoTooltip isOpen={isInfoToolTipOpen} onClose={closeAllPopups} />
+          <InfoTooltip isOpen={isInfoToolTipOpen} onClose={closeAllPopups} status={status} />
         </CurrentUserContext.Provider>
       </Switch>
     </div>
