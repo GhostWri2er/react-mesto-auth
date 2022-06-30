@@ -25,6 +25,7 @@ function App() {
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [status, setStatus] = useState('');
+  const [email, setEmail] = useState();
 
   const history = useHistory();
 
@@ -184,10 +185,11 @@ function App() {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
       auth
-        .getToken(jwt)
+        .checkToken(jwt)
         .then((res) => {
           if (res) {
             setLoggedIn(true);
+            setEmail(res.data.email);
           }
         })
         .catch((err) => {
@@ -201,7 +203,7 @@ function App() {
     <div className="page">
       <Switch>
         <CurrentUserContext.Provider value={currentUser}>
-          <Header />
+          <Header userData={email} />
           <ProtectedRoute exact path="/" loggedIn={loggedIn}>
             <Main
               cards={cards}

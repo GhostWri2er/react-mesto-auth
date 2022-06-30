@@ -20,7 +20,7 @@ export const login = (data) => {
   }).then((res) => checkResponse(res));
 };
 
-export const getToken = (jwt) => {
+export const checkToken = (jwt) => {
   return fetch(`${baseUrl}/users/me`, {
     method: 'GET',
     headers: {
