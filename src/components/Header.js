@@ -3,12 +3,13 @@ import logo from '../images/logo.svg';
 import { Link, Route, Switch } from 'react-router-dom';
 
 function Header({ userData, exit, loggedIn }) {
+  console.log(userData);
   return (
     <header className="header">
       <div className="header__container">
         <img className="header__logo" src={logo} alt="Логотип" />
         <nav className="header__login">
-          <p className="header__email">{loggedIn ? userData : ''}</p>
+          <p className="header__email">{loggedIn ? userData : userData}</p>
 
           <Switch>
             <Route exact path="/">

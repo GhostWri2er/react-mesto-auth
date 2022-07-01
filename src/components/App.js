@@ -25,7 +25,7 @@ function App() {
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [status, setStatus] = useState('');
-  const [email, setEmail] = useState();
+  const [email, setEmail] = useState('');
 
   const history = useHistory();
 
@@ -151,9 +151,10 @@ function App() {
       .login(data)
       .then((data) => {
         if (data) {
-          console.log(data);
           localStorage.setItem('jwt', data.token);
+          setEmail(email);
           setLoggedIn(true);
+          tokenCheck();
         } else {
           setIsInfoToolTipOpen(true);
         }
@@ -188,6 +189,7 @@ function App() {
         .checkToken(jwt)
         .then((res) => {
           if (res) {
+            console.log(res);
             setLoggedIn(true);
             setEmail(res.data.email);
           }
