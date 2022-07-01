@@ -199,11 +199,18 @@ function App() {
     }
   };
 
+  const exit = () => {
+    localStorage.removeItem('jwt');
+    setLoggedIn(false);
+    setEmail('');
+    history.push('/sign-in');
+  };
+
   return (
     <div className="page">
       <Switch>
         <CurrentUserContext.Provider value={currentUser}>
-          <Header userData={email} />
+          <Header userData={email} exit={exit} loggedIn={loggedIn} />
           <ProtectedRoute exact path="/" loggedIn={loggedIn}>
             <Main
               cards={cards}

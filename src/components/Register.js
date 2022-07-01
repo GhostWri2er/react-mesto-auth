@@ -45,10 +45,12 @@ function Register({ onRegister }) {
           Зарегистироваться
         </button>
       </form>
-      <p className="register__paragraph">Уже зарегистрированы?</p>
-      <Link to="/sign-in" className="register__link">
-        Войти
-      </Link>
+      <p className="register__paragraph">
+        Уже зарегистрированы?
+        <Link to="/sign-in" className="register__link">
+          Войти
+        </Link>
+      </p>
     </section>
   );
 }
